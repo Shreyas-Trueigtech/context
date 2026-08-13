@@ -8,8 +8,14 @@ const makeDefaultValues = (fields) => {
   }, {});
 };
 
-export const useLoginForm = ({ fields, onSubmitUser }) => {
-  const defaultValues = useMemo(() => makeDefaultValues(fields), [fields]);
+export const useLoginForm = ({ fields, onSubmitUser, initialValues = {} }) => {
+  const defaultValues = useMemo(
+    () => ({
+      ...makeDefaultValues(fields),
+      ...initialValues,
+    }),
+    [fields, initialValues],
+  );
 
   const {
     register,

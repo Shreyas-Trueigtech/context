@@ -9,9 +9,8 @@ const Login = () => {
 
   const handleUserSubmit = (data) => {
     const newUser = {
-      email: data.email,
-      name: data.name ?? data.email.split("@")[0],
-      password: data.password,
+      ...data,
+      name: data.name ?? data.email?.split("@")[0] ?? "",
     };
 
     setUser(newUser);
@@ -21,8 +20,14 @@ const Login = () => {
     fields: LOGIN_FORM_FIELDS,
     onSubmitUser: handleUserSubmit,
     initialValues: {
+      name: user?.name ?? "",
       email: user?.email ?? "",
-      password: user?.password ?? "",
+      phone: user?.phone ?? "",
+      birthday: user?.birthday ?? "",
+      address: user?.address ?? "",
+      gender: user?.gender ?? "",
+      nationality: user?.nationality ?? "",
+      terms: user?.terms ?? false,
     },
   });
 
