@@ -1,15 +1,12 @@
 import React from "react";
-import UserContextProvider from "./context/user/UserContextProvider";
 import Login from "./features/Login/Login";
-import ThemeContextProvider from "./context/theme/ThemeContextProvider";
+import { TooltipProvider } from "./components/ui/tooltip";
 
 const App = () => {
   return (
-    <ThemeContextProvider>
-      <UserContextProvider>
-        <Login />
-      </UserContextProvider>
-    </ThemeContextProvider>
+    <TooltipProvider>
+      <Login />
+    </TooltipProvider>
   );
 };
 

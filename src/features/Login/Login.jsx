@@ -1,80 +1,45 @@
-import React, { useContext, useEffect } from "react";
-import { useForm } from "react-hook-form";
-import UserContext from "../../context/user/userContext";
-import ThemeContext from "../../context/theme/themeContext";
+import React, { useEffect } from "react";
+import { useAppState } from "@/context";
+import LoginForm from "./components/LoginForm";
+import { LOGIN_FORM_FIELDS } from "./constant/loginFormConstants";
+import { useLoginForm } from "./hook/useLoginForm";
 
 const Login = () => {
-  const { user, setUser } = useContext(UserContext);
+  const { user, setUser, theme, toggleTheme } = useAppState();
 
-  const { theme, setTheme } = useContext(ThemeContext);
-
-  const {
-    register,
-    handleSubmit,
-    formState: { errors },
-  } = useForm({
-    defaultValues: {
-      email: "",
-      password: "",
-    },
-  });
-
-  const onSubmit = (data) => {
+  const handleUserSubmit = (data) => {
     const newUser = {
       email: data.email,
-      name: data.email.split("@")[0],
+      name: data.name ?? data.email.split("@")[0],
       password: data.password,
     };
 
     setUser(newUser);
   };
 
+  const { register, errors, onSubmit } = useLoginForm({
+    fields: LOGIN_FORM_FIELDS,
+    onSubmitUser: handleUserSubmit,
+    initialValues: {
+      email: user?.email ?? "",
+      password: user?.password ?? "",
+    },
+  });
+
   useEffect(() => {
     console.log("User updated in context:", user);
   }, [user]);
 
   return (
-    <div className="flex justify-center items-center">
-      <form onSubmit={handleSubmit(onSubmit)}>
-        <div className="border border-gray-400 rounded-2xl gap-3">
-          <label htmlFor="email">Email</label>
-          <input
-            id="email"
-            type="email"
-            {...register("email", {
-              required: "Email is required",
-              pattern: {
-                value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
-                message: "Invalid email address",
-              },
-            })}
-          />
-          {errors.email && (
-            <p style={{ color: "red" }}>{errors.email.message}</p>
-          )}
-        </div>
-
-        <div className="border border-gray-400 rounded-2xl gap-3">
-          <label htmlFor="password">Password</label>
-          <input
-            id="password"
-            type="password"
-            {...register("password", {
-              required: "Password is required",
-              minLength: {
-                value: 6,
-                message: "Password must be at least 6 characters",
-              },
-            })}
-          />
-          {errors.password && (
-            <p style={{ color: "red" }}>{errors.password.message}</p>
-          )}
-        </div>
-
-        <button type="submit">Log In</button>
-      </form>
-    </div>
+    <LoginForm
+      fields={LOGIN_FORM_FIELDS}
+      register={register}
+      errors={errors}
+      onSubmit={onSubmit}
+      user={user}
+      theme={theme}
+      toggleTheme={toggleTheme}
+    />
   );
 };
 
