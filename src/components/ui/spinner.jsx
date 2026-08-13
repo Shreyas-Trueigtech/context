@@ -1,12 +1,12 @@
 import { cn } from "@/lib/utils"
-import { Loader2Icon } from "lucide-react"
+import { RiLoaderLine } from "@remixicon/react"
 
 function Spinner({
   className,
   ...props
 }) {
   return (
-    <Loader2Icon
+    <RiLoaderLine
       data-slot="spinner"
       role="status"
       aria-label="Loading"

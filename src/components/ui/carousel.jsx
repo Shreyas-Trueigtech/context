@@ -3,7 +3,7 @@ import useEmblaCarousel from "embla-carousel-react";
 
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
-import { ChevronLeftIcon, ChevronRightIcon } from "lucide-react"
+import { RiArrowLeftSLine, RiArrowRightSLine } from "@remixicon/react"
 
 const CarouselContext = React.createContext(null)
 
@@ -154,13 +154,13 @@ function CarouselPrevious({
       data-slot="carousel-previous"
       variant={variant}
       size={size}
-      className={cn("absolute touch-manipulation rounded-full", orientation === "horizontal"
+      className={cn("absolute touch-manipulation", orientation === "horizontal"
         ? "inset-y-0 -left-12 my-auto"
         : "-top-12 left-1/2 -translate-x-1/2 rotate-90", className)}
       disabled={!canScrollPrev}
       onClick={scrollPrev}
       {...props}>
-      <ChevronLeftIcon />
+      <RiArrowLeftSLine />
       <span className="sr-only">Previous slide</span>
     </Button>
   );
@@ -179,13 +179,13 @@ function CarouselNext({
       data-slot="carousel-next"
       variant={variant}
       size={size}
-      className={cn("absolute touch-manipulation rounded-full", orientation === "horizontal"
+      className={cn("absolute touch-manipulation", orientation === "horizontal"
         ? "inset-y-0 -right-12 my-auto"
         : "-bottom-12 left-1/2 -translate-x-1/2 rotate-90", className)}
       disabled={!canScrollNext}
       onClick={scrollNext}
       {...props}>
-      <ChevronRightIcon />
+      <RiArrowRightSLine />
       <span className="sr-only">Next slide</span>
     </Button>
   );

@@ -1,34 +1,63 @@
-import { useMemo } from "react";
+import { useEffect, useMemo } from "react";
 import { useForm } from "react-hook-form";
+import { useAppState } from "@/context";
+import { LOGIN_FORM_FIELDS } from "../constant/loginFormConstants";
 
-const makeDefaultValues = (fields) => {
+const makeValuesFromFields = (fields, source = {}) => {
   return fields.reduce((acc, field) => {
-    acc[field?.name] = field?.defaultValue ?? "";
+    const name = field?.name;
+
+    if (!name) {
+      return acc;
+    }
+
+    const fieldDefault = field?.defaultValue ?? "";
+    acc[name] = source?.[name] ?? fieldDefault;
+
     return acc;
   }, {});
 };
 
-export const useLoginForm = ({ fields, onSubmitUser, initialValues = {} }) => {
+export const useLoginForm = () => {
+  const { user, setUser, theme, toggleTheme } = useAppState();
+
   const defaultValues = useMemo(
-    () => ({
-      ...makeDefaultValues(fields),
-      ...initialValues,
-    }),
-    [fields, initialValues],
+    () => makeValuesFromFields(LOGIN_FORM_FIELDS, user),
+    [user],
   );
 
   const {
     register,
     handleSubmit,
+    control,
+    reset,
     formState: { errors },
   } = useForm({ defaultValues });
 
+  useEffect(() => {
+    reset(defaultValues);
+  }, [defaultValues, reset]);
+
   const onSubmit = handleSubmit((data) => {
-    onSubmitUser(data);
+    const newUser = {
+      ...data,
+      name: data.name ?? data.email?.split("@")[0] ?? "",
+    };
+
+    setUser(newUser);
   });
 
+  useEffect(() => {
+    console.log("User updated in context:", user);
+  }, [user]);
+
   return {
+    fields: LOGIN_FORM_FIELDS,
+    user,
+    theme,
+    toggleTheme,
     register,
+    control,
     errors,
     onSubmit,
   };

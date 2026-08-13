@@ -14,81 +14,56 @@ import {
   FieldLabel,
   FieldSet,
 } from "@/components/ui/field";
-import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+import {
+  CommonInput,
+  CommonTextareaField,
+  CommonSelectField,
+  CommonRadioField,
+  CommonCheckboxField,
+} from "@/components/common";
 
-const LoginForm = ({ fields, register, errors, onSubmit, theme, toggleTheme }) => {
+const LoginForm = ({
+  fields,
+  register,
+  control,
+  errors,
+  onSubmit,
+  theme,
+  toggleTheme,
+}) => {
+  const controlRenderers = {
+    textarea: (field) => (
+      <CommonTextareaField field={field} register={register} errors={errors} />
+    ),
+    select: (field) => (
+      <CommonSelectField field={field} control={control} errors={errors} />
+    ),
+    radio: (field) => (
+      <CommonRadioField field={field} control={control} errors={errors} />
+    ),
+    checkbox: (field) => (
+      <CommonCheckboxField field={field} control={control} errors={errors} />
+    ),
+  };
+
+  const defaultRenderer = (field) => (
+    <CommonInput
+      id={field.name}
+      type={field.type}
+      placeholder={field.placeholder}
+      isInvalid={!!errors[field.name]}
+      {...register(field.name, field.rules)}
+    />
+  );
+
+  const showLabelByType = {
+    checkbox: false,
+  };
+
   const renderFieldControl = (field) => {
-    if (field.type === "textarea") {
-      return (
-        <textarea
-          id={field.name}
-          placeholder={field.placeholder}
-          aria-invalid={!!errors[field.name]}
-          className="w-full rounded-md border border-input bg-background px-3 py-2 text-sm"
-          {...register(field.name, field.rules)}
-        />
-      );
-    }
-
-    if (field.type === "select") {
-      return (
-        <select
-          id={field.name}
-          aria-invalid={!!errors[field.name]}
-          className="w-full rounded-md border border-input bg-background px-3 py-2 text-sm"
-          {...register(field.name, field.rules)}
-        >
-          <option value="">{field.placeholder ?? "Select an option"}</option>
-          {(field.options ?? []).map((option) => (
-            <option key={option.value} value={option.value}>
-              {option.label}
-            </option>
-          ))}
-        </select>
-      );
-    }
-
-    if (field.type === "radio") {
-      return (
-        <div className="flex gap-4">
-          {(field.options ?? []).map((option) => (
-            <label key={option.value} className="flex items-center gap-2 text-sm">
-              <input
-                type="radio"
-                value={option.value}
-                {...register(field.name, field.rules)}
-              />
-              <span>{option.label}</span>
-            </label>
-          ))}
-        </div>
-      );
-    }
-
-    if (field.type === "checkbox") {
-      return (
-        <label className="flex items-center gap-2 text-sm">
-          <input
-            id={field.name}
-            type="checkbox"
-            aria-invalid={!!errors[field.name]}
-            {...register(field.name, field.rules)}
-          />
-          <span>{field.label}</span>
-        </label>
-      );
-    }
-
-    return (
-      <Input
-        id={field.name}
-        type={field.type}
-        placeholder={field.placeholder}
-        aria-invalid={!!errors[field.name]}
-        {...register(field.name, field.rules)}
-      />
-    );
+    const renderer = controlRenderers[field?.type] ?? defaultRenderer;
+    return renderer(field);
   };
 
   return (
@@ -112,16 +87,18 @@ const LoginForm = ({ fields, register, errors, onSubmit, theme, toggleTheme }) =
             <FieldGroup>
               <FieldSet>
                 {fields.map((field) => (
-                  <Field key={field.name} data-invalid={!!errors[field.name]}>
-                    {field.type === "checkbox" ? null : (
-                      <FieldLabel htmlFor={field.name}>{field.label}</FieldLabel>
-                    )}
-                    {renderFieldControl(field)}
-                    {field.description ? (
-                      <FieldDescription>{field.description}</FieldDescription>
+                  <Field key={field?.name} data-invalid={!!errors[field?.name]}>
+                    {(showLabelByType[field?.type] ?? true) ? (
+                      <FieldLabel htmlFor={field.name}>
+                        {field.label}
+                      </FieldLabel>
                     ) : null}
-                    {errors[field.name] ? (
-                      <FieldError>{errors[field.name].message}</FieldError>
+                    {renderFieldControl(field)}
+                    {field?.description ? (
+                      <FieldDescription>{field?.description}</FieldDescription>
+                    ) : null}
+                    {errors[field?.name] ? (
+                      <FieldError>{errors[field?.name].message}</FieldError>
                     ) : null}
                   </Field>
                 ))}

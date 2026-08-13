@@ -1,11 +1,11 @@
 import React from "react";
-import Login from "./features/Login/Login";
 import { TooltipProvider } from "./components/ui/tooltip";
+import AppRoutes from "./router/route";
 
 const App = () => {
   return (
     <TooltipProvider>
-      <Login />
+      <AppRoutes />
     </TooltipProvider>
   );
 };

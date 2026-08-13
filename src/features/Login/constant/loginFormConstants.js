@@ -1,4 +1,4 @@
-export const LOGIN_FORM_FIELDS =  [
+export const LOGIN_FORM_FIELDS = [
   {
     name: "name",
     label: "Full Name",
@@ -109,7 +109,38 @@ export const LOGIN_FORM_FIELDS =  [
       required: "Please select your nationality",
     },
   },
-
+  {
+    name: "experience",
+    label: "Experience Level",
+    type: "select",
+    defaultValue: "",
+    placeholder: "Select your experience level",
+    options: [
+      {
+        label: "Fresher",
+        value: "fresher",
+      },
+      {
+        label: "Junior",
+        value: "junior",
+      },
+      {
+        label: "Mid-Level",
+        value: "mid-level",
+      },
+      {
+        label: "Senior",
+        value: "senior",
+      },
+      {
+        label: "Expert",
+        value: "expert",
+      },
+    ],
+    rules: {
+      required: "Please select your experience level",
+    },
+  },
   {
     name: "terms",
     label: "I agree to the Terms and Conditions",
