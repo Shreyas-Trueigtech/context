@@ -1,12 +1,12 @@
 import { cn } from "@/lib/utils"
-import { RiLoaderLine } from "@remixicon/react"
+import { SpinnerIcon } from "@phosphor-icons/react"
 
 function Spinner({
   className,
   ...props
 }) {
   return (
-    <RiLoaderLine
+    <SpinnerIcon
       data-slot="spinner"
       role="status"
       aria-label="Loading"

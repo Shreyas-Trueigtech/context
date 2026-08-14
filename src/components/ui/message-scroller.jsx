@@ -8,7 +8,7 @@ import {
 
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
-import { RiArrowDownLine } from "@remixicon/react"
+import { ArrowDownIcon } from "@phosphor-icons/react"
 
 function MessageScrollerProvider(
   props
@@ -99,7 +99,7 @@ function MessageScrollerButton({
       {...props}>
       {children ?? (
         <>
-          <RiArrowDownLine />
+          <ArrowDownIcon />
           <span className="sr-only">
             {direction === "end" ? "Scroll to end" : "Scroll to start"}
           </span>

@@ -53,9 +53,9 @@ export const useLoginForm = () => {
     setUser(newUser);
   });
 
-  useEffect(() => {
-    console.log("User updated in context:", user);
-  }, [user]);
+  // useEffect(() => {
+  //   console.log("User updated in context:", user);
+  // }, [user]);
 
   return {
     formHeader,

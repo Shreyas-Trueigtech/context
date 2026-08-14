@@ -1,7 +1,7 @@
-import CommonForm from "@/components/common/form";
+import CommonForm from "@/common/form";
 import React from "react";
 
-const EemployeeForm = ({
+const EmployeeForm = ({
   formHeader,
   fields,
   register,
@@ -27,4 +27,4 @@ const EemployeeForm = ({
   );
 };
 
-export default EemployeeForm;
+export default EmployeeForm;

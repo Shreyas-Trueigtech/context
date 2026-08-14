@@ -28,5 +28,16 @@ export const KANBAN_INITIAL_COLUMNS = {
       { id: "4", content: "Kickoff meeting" },
       { id: "5", content: "Budget approval" },
     ],
-  }
+  },
+  Working: {
+    name: "Working",
+    dot: "bg-gray-500",
+    header: "text-gray-600",
+    ring: "ring-emerald-300",
+    soft: "bg-emerald-50",
+    items: [
+      { id: "4", content: "Kickoff meeting" },
+      { id: "5", content: "Budget approval" },
+    ],
+  },
 };

@@ -1,4 +1,4 @@
-import CommonForm from "@/components/common/form";
+import CommonForm from "@/common/form";
 import React from "react";
 
 const LoginForm = ({
