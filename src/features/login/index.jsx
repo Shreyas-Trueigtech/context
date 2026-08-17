@@ -1,33 +1,11 @@
 import React from "react";
 import LoginForm from "./components/loginForm";
-import { useLoginForm } from "./hook/useloginForm";
+import { useLoginForm } from "./hook/useLoginForm";
 
 const login = () => {
-  const {
-    formHeader,
-    fields,
-    user,
-    theme,
-    toggleTheme,
-    register,
-    control,
-    errors,
-    onSubmit,
-  } = useLoginForm();
+  const loginFormProps = useLoginForm();
 
-  return (
-    <LoginForm
-      formHeader={formHeader}
-      fields={fields}
-      register={register}
-      control={control}
-      errors={errors}
-      onSubmit={onSubmit}
-      user={user}
-      theme={theme}
-      toggleTheme={toggleTheme}
-    />
-  );
+  return <LoginForm {...loginFormProps} />;
 };
 
 export default login;

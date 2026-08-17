@@ -1,30 +1,8 @@
 import CommonForm from "@/common/form";
 import React from "react";
 
-const EmployeeForm = ({
-  formHeader,
-  fields,
-  register,
-  control,
-  errors,
-  onSubmit,
-  user,
-  theme,
-  toggleTheme,
-}) => {
-  return (
-    <CommonForm
-      formHeader={formHeader}
-      fields={fields}
-      register={register}
-      control={control}
-      errors={errors}
-      onSubmit={onSubmit}
-      user={user}
-      theme={theme}
-      toggleTheme={toggleTheme}
-    />
-  );
+const EmployeeForm = (props) => {
+  return <CommonForm {...props} />;
 };
 
 export default EmployeeForm;

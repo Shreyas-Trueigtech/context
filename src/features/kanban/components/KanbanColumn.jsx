@@ -1,16 +1,11 @@
 import React from "react";
-import { Plus } from "lucide-react";
-
+import { Plus, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import {
-  Card,
-  CardContent,
-  CardHeader,
-} from "@/components/ui/card";
+import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Textarea } from "@/components/ui/textarea";
-
 import KanbanTaskCard from "./KanbanTaskCard";
+import { Input } from "@/components/ui/input";
 
 const AddTaskForm = ({
   columnId,
@@ -25,19 +20,14 @@ const AddTaskForm = ({
       className="mt-3 space-y-2 rounded-xl border border-border bg-muted/30 p-3"
       onSubmit={handleSubmit(() => addNewTask(columnId))}
     >
-      <Textarea
+      <Input
         autoFocus
         {...register("task")}
         onKeyDown={(event) => {
-          if (
-            event.key === "Enter" &&
-            !event.shiftKey
-          ) {
+          if (event.key === "Enter" && !event.shiftKey) {
             event.preventDefault();
 
-            handleSubmit(() =>
-              addNewTask(columnId),
-            )();
+            handleSubmit(() => addNewTask(columnId))();
           }
 
           if (event.key === "Escape") {
@@ -48,7 +38,30 @@ const AddTaskForm = ({
             });
           }
         }}
-        placeholder="Describe the task..."
+        placeholder="Task tittle..."
+        rows={2}
+        className="min-h-0 resize-none rounded-md border bg-background text-sm"
+      />
+
+       <Textarea
+        autoFocus
+        {...register("taskDesc")}
+        onKeyDown={(event) => {
+          if (event.key === "Enter" && !event.shiftKey) {
+            event.preventDefault();
+
+            handleSubmit(() => addNewTask(columnId))();
+          }
+
+          if (event.key === "Escape") {
+            setActiveColumn(null);
+
+            reset({
+              task: "",
+            });
+          }
+        }}
+        placeholder="Description the task..."
         rows={2}
         className="min-h-0 resize-none rounded-md border bg-background text-sm"
       />
@@ -87,6 +100,7 @@ const KanbanColumn = ({
   register,
   handleSubmit,
   reset,
+  removeColumn,
   addNewTask,
   removeTask,
   editTask,
@@ -97,13 +111,9 @@ const KanbanColumn = ({
 }) => {
   return (
     <Card
-      onDragOver={(event) =>
-        handleDragOver(event, columnId)
-      }
+      onDragOver={(event) => handleDragOver(event, columnId)}
       onDragLeave={handleDragLeave}
-      onDrop={(event) =>
-        handleDrop(event, columnId)
-      }
+      onDrop={(event) => handleDrop(event, columnId)}
       className={`flex h-full flex-col bg-white p-0 transition-shadow ${
         dragOverColumn === columnId
           ? `ring-2 ${column.ring} shadow-lg`
@@ -113,28 +123,31 @@ const KanbanColumn = ({
       <CardHeader className="px-4 pb-3 pt-4">
         <div className="flex items-center justify-between gap-2">
           <div className="flex items-center gap-2">
-            <span
-              className={`h-2.5 w-2.5 rounded-full ${column.dot}`}
-            />
+            <span className={`h-2.5 w-2.5 rounded-full ${column.dot}`} />
 
-            <h2
-              className={`text-sm font-semibold ${column.header}`}
-            >
+            <h2 className={`text-sm font-semibold ${column.header}`}>
               {column.name}
             </h2>
+
+            <Badge variant="secondary" className="rounded-full">
+              {column.items.length}
+            </Badge>
           </div>
 
-          <Badge
-            variant="secondary"
-            className="rounded-full"
+          <Button
+            type="button"
+            variant="ghost"
+            size="icon-xs"
+            onClick={() => removeColumn(columnId)}
+            className="text-muted-foreground hover:text-destructive"
+            aria-label={`Delete ${column.name} column`}
           >
-            {column.items.length}
-          </Badge>
+            <X size={14} />
+          </Button>
         </div>
       </CardHeader>
 
       <CardContent className="flex min-h-20 flex-1 flex-col gap-2 px-4 pb-4">
-
         {column.items.map((item) => (
           <KanbanTaskCard
             key={item.id}
@@ -147,12 +160,11 @@ const KanbanColumn = ({
           />
         ))}
 
-        {column.items.length === 0 &&
-          dragOverColumn === columnId && (
-            <div
-              className={`flex-1 rounded-xl border-2 border-dashed ${column.ring} ${column.soft}`}
-            />
-          )}
+        {column.items.length === 0 && dragOverColumn === columnId && (
+          <div
+            className={`flex-1 rounded-xl border-2 border-dashed ${column.ring} ${column.soft}`}
+          />
+        )}
 
         {activeColumn === columnId ? (
           <AddTaskForm
@@ -178,7 +190,6 @@ const KanbanColumn = ({
             className="mt-2 justify-start gap-1.5 px-2 text-muted-foreground hover:text-foreground"
           >
             <Plus size={16} />
-
             Add task
           </Button>
         )}

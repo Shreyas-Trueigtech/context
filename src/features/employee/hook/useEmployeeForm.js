@@ -28,7 +28,7 @@ export const useLoginForm = () => {
 
   const defaultValues = useMemo(
     () => makeValuesFromFields(LOGIN_FORM_FIELDS, user),
-    [user],
+    [],
   );
 
   const {
@@ -49,8 +49,8 @@ export const useLoginForm = () => {
       name: data.name ?? data.email?.split("@")[0] ?? "",
     };
     setUser(newUser);
-    console.log(user);
-    
+    console.log(newUser);
+    reset();
   });
 
   useEffect(() => {
@@ -60,6 +60,7 @@ export const useLoginForm = () => {
       navigate("/login");
     }
 
+    reset(makeValuesFromFields(LOGIN_FORM_FIELDS, user));
   }, [user]);
 
   return {

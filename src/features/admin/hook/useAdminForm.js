@@ -24,7 +24,7 @@ const makeValuesFromFields = (fields, source = {}) => {
   };
 
 
-export const useLoginForm = () => {
+export const useAdminForm = () => {
   const { user, setUser, theme, toggleTheme } = useAppState();
 
   const defaultValues = useMemo(
@@ -53,9 +53,9 @@ export const useLoginForm = () => {
     setUser(newUser);
   });
 
-  // useEffect(() => {
-  //   console.log("User updated in context:", user);
-  // }, [user]);
+  useEffect(() => {
+    console.log("User updated in context:", user);
+  }, [user]);
 
   return {
     formHeader,

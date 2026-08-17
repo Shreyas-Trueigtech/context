@@ -7,40 +7,122 @@ import { useDebounce } from "./useDebounce";
 export const useKanban = () => {
   const [columns, setColumns] = useState(KANBAN_INITIAL_COLUMNS);
   const [activeColumn, setActiveColumn] = useState(null);
+  const [modalColumnId, setModalColumnId] = useState(null);
   const [draggedItem, setDraggedItem] = useState(null);
   const [dragOverColumn, setDragOverColumn] = useState(null);
   const [searchTerm, setSearchTerm] = useState("");
   const debouncedSearchTerm = useDebounce(searchTerm, 500);
   const [popScreen, setPopScreen] = useState(false);
+  const [popTableScreen, setPopTableScreen] = useState(false);
   const [editingTask, setEditingTask] = useState(null);
 
   const form = useForm({
     defaultValues: {
       task: "",
+      taskDesc: "",
       newTaskTable: "",
     },
   });
 
   const { register, handleSubmit, reset, watch } = form;
 
-  const newTask = watch("task");
+  const newTask = watch("task")?.trim();
+  const newTaskDesc = watch("taskDesc")?.trim();
+
+  // const newTaskObj = {
+  //   task: newTask,
+  //   description: newTaskDesc,
+  // };
+
   const newTaskTable = watch("newTaskTable");
+
+  const saveTask = () => {
+    const value = {
+      content: newTask,
+      description: newTaskDesc,
+    };
+
+    if (!value.content) return;
+
+    if (editingTask) {
+      updateTask(editingTask.columnId, editingTask.taskId, value);
+    } else if (modalColumnId) {
+      addNewTask(modalColumnId, value);
+    } else if (activeColumn) {
+      addNewTask(activeColumn, value);
+    } else {
+      const firstColumnId = Object.keys(columns)[0] || "todo";
+      addNewTask(firstColumnId, value);
+    }
+
+    closeTaskPopup();
+  };
 
   const addNewTable = () => {
     const name = newTaskTable?.trim();
 
     if (!name) return;
 
-    const columnId = name.toLowerCase().replace(/\s+/g, "-");
+    const baseColumnId = name.toLowerCase().replace(/\s+/g, "-");
+    const columnId = columns[baseColumnId]
+      ? `${baseColumnId}-${Date.now()}`
+      : baseColumnId;
+
+    const colorPalettes = [
+      {
+        dot: "bg-indigo-500",
+        header: "text-indigo-600",
+        ring: "ring-indigo-300",
+        soft: "bg-indigo-50",
+      },
+      {
+        dot: "bg-amber-500",
+        header: "text-amber-600",
+        ring: "ring-amber-300",
+        soft: "bg-amber-50",
+      },
+      {
+        dot: "bg-emerald-500",
+        header: "text-emerald-600",
+        ring: "ring-emerald-300",
+        soft: "bg-emerald-50",
+      },
+      {
+        dot: "bg-purple-500",
+        header: "text-purple-600",
+        ring: "ring-purple-300",
+        soft: "bg-purple-50",
+      },
+      {
+        dot: "bg-rose-500",
+        header: "text-rose-600",
+        ring: "ring-rose-300",
+        soft: "bg-rose-50",
+      },
+      {
+        dot: "bg-sky-500",
+        header: "text-sky-600",
+        ring: "ring-sky-300",
+        soft: "bg-sky-50",
+      },
+      {
+        dot: "bg-gray-500",
+        header: "text-gray-600",
+        ring: "ring-gray-300",
+        soft: "bg-gray-50",
+      },
+    ];
+    const theme =
+      colorPalettes[Object.keys(columns).length % colorPalettes.length];
 
     setColumns((prev) => ({
       ...prev,
       [columnId]: {
         name,
-        dot: "bg-indigo-500",
-        header: "text-indigo-600",
-        ring: "ring-indigo-300",
-        soft: "bg-indigo-50",
+        dot: theme.dot,
+        header: theme.header,
+        ring: theme.ring,
+        soft: theme.soft,
         items: [],
       },
     }));
@@ -49,60 +131,79 @@ export const useKanban = () => {
   };
 
   const openNewTablePopup = () => {
+    setActiveColumn(null);
+    setPopScreen(false);
     reset({ newTaskTable: "" });
-    setPopScreen(true);
+    setPopTableScreen(true);
   };
 
   const closeNewTablePopup = () => {
-    setPopScreen(false);
+    setPopTableScreen(false);
     reset({ newTaskTable: "" });
   };
 
-  const addNewTask = (columnId) => {
-    const value = newTask?.trim();
+  const removeColumn = (columnId) => {
+    setColumns((prev) => {
+      const updatedColumns = { ...prev };
 
-    if (!value) return;
+      delete updatedColumns[columnId];
 
-    if (editingTask) {
-      setColumns((prev) => ({
-        ...prev,
+      return updatedColumns;
+    });
+  };
 
-        [editingTask.columnId]: {
-          ...prev[editingTask.columnId],
+  const addNewTask = (columnId, explicitValue) => {
 
-          items: prev[editingTask.columnId].items.map((item) =>
-            item.id === editingTask.taskId
-              ? {
-                  ...item,
-                  content: value,
-                }
-              : item,
-          ),
-        },
-      }));
+    const value =
+      explicitValue !== undefined
+        ? explicitValue
+        : { content: newTask, description: newTaskDesc };
 
-      closeTaskPopup();
+        
 
-      return;
-    }
+        console.log('value',value);
+        
+    const content = value?.content?.trim();
+    if (!content) return;
 
     setColumns((prev) => ({
       ...prev,
-
       [columnId]: {
         ...prev[columnId],
-
         items: [
           ...prev[columnId].items,
           {
             id: Date.now().toString(),
-            content: value,
+            content,
+            description: value?.description?.trim(),
           },
         ],
       },
     }));
 
-    closeTaskPopup();
+    setActiveColumn(null);
+    reset({ task: "", taskDesc: "" });
+  };
+
+  const updateTask = (columnId, taskId, updatedFields) => {
+    const content = updatedFields?.content?.trim();
+    if (!content) return;
+
+    setColumns((prev) => ({
+      ...prev,
+      [columnId]: {
+        ...prev[columnId],
+        items: prev[columnId].items.map((item) =>
+          item.id === taskId
+            ? {
+                ...item,
+                content,
+                description: updatedFields?.description?.trim() ?? "",
+              }
+            : item,
+        ),
+      },
+    }));
   };
 
   const removeTask = (columnId, taskId) => {
@@ -119,41 +220,38 @@ export const useKanban = () => {
 
   const openNewTaskPopup = (columnId) => {
     setEditingTask(null);
+    setModalColumnId(columnId || Object.keys(columns)[0] || "todo");
+    setActiveColumn(null);
+    setPopTableScreen(false);
 
-    reset({
-      task: "",
-    });
+    reset({ task: "", taskDesc: "" });
 
-    setActiveColumn(columnId);
     setPopScreen(true);
   };
 
   const editTask = (columnId, taskId) => {
     const task = columns[columnId]?.items.find((item) => item.id === taskId);
-
     if (!task) return;
 
-    setEditingTask({
-      columnId,
-      taskId,
-    });
+    setEditingTask({ columnId, taskId });
+    setModalColumnId(columnId);
+    setActiveColumn(null);
+    setPopTableScreen(false);
 
     reset({
       task: task.content,
+      taskDesc: task.description ?? "", // ← prefill description
     });
 
-    setActiveColumn(columnId);
     setPopScreen(true);
   };
 
   const closeTaskPopup = () => {
     setPopScreen(false);
     setEditingTask(null);
-    setActiveColumn(null);
+    setModalColumnId(null);
 
-    reset({
-      task: "",
-    });
+    reset({ task: "", taskDesc: "" });
   };
 
   const handleDragStart = (columnId, item) => {
@@ -243,12 +341,17 @@ export const useKanban = () => {
 
     popScreen,
     setPopScreen,
+    popTableScreen,
+    setPopTableScreen,
     openNewTaskPopup,
     closeTaskPopup,
 
     editingTask,
     editTask,
 
+    saveTask,
+    updateTask,
+    removeColumn,
     addNewTask,
     removeTask,
     draggedItem,

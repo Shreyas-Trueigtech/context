@@ -6,8 +6,18 @@ export const KANBAN_INITIAL_COLUMNS = {
     ring: "ring-indigo-300",
     soft: "bg-indigo-50",
     items: [
-      { id: "1", content: "Market research" },
-      { id: "2", content: "Competitor analysis" },
+      {
+        id: "1",
+        content: "Market research",
+        description:
+          "Research target audience, market size, and demand for the product.",
+      },
+      {
+        id: "2",
+        content: "Competitor analysis",
+        description:
+          "Identify key competitors and evaluate their strengths and weaknesses.",
+      },
     ],
   },
   inProgress: {
@@ -16,7 +26,14 @@ export const KANBAN_INITIAL_COLUMNS = {
     header: "text-amber-600",
     ring: "ring-amber-300",
     soft: "bg-amber-50",
-    items: [{ id: "3", content: "Landing page draft" }],
+    items: [
+      {
+        id: "3",
+        content: "Competitor analysis",
+        description:
+          "Identify key competitors and evaluate their strengths and weaknesses.",
+      },
+    ],
   },
   done: {
     name: "Done",
@@ -24,10 +41,7 @@ export const KANBAN_INITIAL_COLUMNS = {
     header: "text-emerald-600",
     ring: "ring-emerald-300",
     soft: "bg-emerald-50",
-    items: [
-      { id: "4", content: "Kickoff meeting" },
-      { id: "5", content: "Budget approval" },
-    ],
+    items: [],
   },
   Working: {
     name: "Working",
@@ -35,9 +49,6 @@ export const KANBAN_INITIAL_COLUMNS = {
     header: "text-gray-600",
     ring: "ring-emerald-300",
     soft: "bg-emerald-50",
-    items: [
-      { id: "4", content: "Kickoff meeting" },
-      { id: "5", content: "Budget approval" },
-    ],
+    items: [],
   },
 };
